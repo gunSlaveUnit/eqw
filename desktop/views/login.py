@@ -8,6 +8,8 @@ class Login(Frame):
     def __init__(self, master=None):
         super(Login, self).__init__(master)
 
+        self.master = master
+
         self.header_label = Label(self, text="Вход")
         self.header_label.pack()
 
@@ -33,4 +35,4 @@ class Login(Frame):
         })
 
         if reply.status_code == requests.codes.ok:
-            pass
+            self.master.switch_frame(self.master.menu_page)
