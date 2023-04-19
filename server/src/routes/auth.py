@@ -41,7 +41,7 @@ async def sign_up(registration_data: SignUpSchema,
 
     return await sign_in(
         SignInSchema(
-            account_name=user.account_name,
+            username=user.username,
             password=registration_data.password
         ),
         db
