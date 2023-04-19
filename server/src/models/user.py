@@ -7,5 +7,5 @@ class User(Entity):
     __tablename__ = "users"
 
     email = Column(String, index=True, nullable=False)
-    account_name = Column(String, index=True, nullable=False)
+    username = Column(String, index=True, nullable=False)
     password = Column(String, nullable=False)
