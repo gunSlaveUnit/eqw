@@ -10,23 +10,23 @@ class Login(Frame):
 
         self.master = master
 
-        self.header_label = Label(self, text="Вход")
-        self.header_label.pack()
+        self.header_label = Label(self, text="\nВход", font=('Helvetica', 18, "bold"))
+        self.header_label.pack(pady=20)
 
-        self.username_label = Label(self, text="Имя пользователя")
+        self.username_label = Label(self, text="\n\nИмя пользователя", font=('Helvetica', 12))
         self.username_label.pack()
 
         self.username_entry = Entry(self)
         self.username_entry.pack()
 
-        self.password_label = Label(self, text="Пароль")
+        self.password_label = Label(self, text="\nПароль\n", font=('Helvetica', 12))
         self.password_label.pack()
 
         self.password_entry = Entry(self)
         self.password_entry.pack()
 
         self.login_button = Button(self, text="Войти", command=self.login)
-        self.login_button.pack()
+        self.login_button.pack(pady=20)
 
     def login(self):
         reply = requests.post('http://localhost:23432/auth/sign-in/', json={

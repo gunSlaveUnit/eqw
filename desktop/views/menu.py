@@ -1,4 +1,6 @@
-from tkinter import Frame, Label
+from tkinter import Frame, Label, Menu
+
+from tksidebar import Sidebook
 
 
 class Menu(Frame):
@@ -7,3 +9,6 @@ class Menu(Frame):
 
         header_label = Label(self, text="Меню")
         header_label.pack()
+
+
+
