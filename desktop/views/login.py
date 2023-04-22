@@ -1,3 +1,49 @@
+"""from PySide6.QtGui import QMouseEvent
+from PySide6.QtWidgets import QWidget, QPushButton, QGridLayout, QLineEdit, QLabel
+
+from desktop.config.config import PAGE
+
+
+class SignInPage(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.parent = parent
+
+        # Widgets
+        self.email = QLineEdit()
+        self.password = QLineEdit()
+        self.sign_in_button = QPushButton()
+        self.no_account_label = QLabel()
+
+        self.layout = QGridLayout()
+
+        self.set_ui()
+
+    def set_ui(self):
+        self.password.setEchoMode(QLineEdit.Password)
+
+        self.sign_in_button.setText("Войти")
+        self.sign_in_button.clicked.connect(self.sign_in)
+
+        self.no_account_label.setText("Нет аккаунта")
+        self.no_account_label.mousePressEvent = self.no_account_label_pressed_event
+
+        self.layout.addWidget(self.email)
+        self.layout.addWidget(self.password)
+        self.layout.addWidget(self.sign_in_button)
+        self.layout.addWidget(self.no_account_label)
+
+        self.setLayout(self.layout)
+
+    def sign_in(self):
+        self.parent.set_full_ui()
+        self.parent.change_page(PAGE.MENU.value)
+
+    def no_account_label_pressed_event(self, event: QMouseEvent):
+        self.parent.change_page(PAGE.SIGN_UP.value)
+"""
+
 from tkinter import Frame, Label, Entry
 from tkinter.ttk import Button
 
@@ -35,4 +81,6 @@ class Login(Frame):
         })
 
         if reply.status_code == requests.codes.ok:
+
             self.master.switch_frame(self.master.menu_page)
+            self.master.full_ui()
