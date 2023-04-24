@@ -12,9 +12,9 @@ from server.src.utils.db import get_db, sessions
 router = APIRouter(prefix='/attack')
 
 
-@router.get('/{code}', response_model=List[AttackDBSchema])
+@router.get('/{code}', response_model=AttackDBSchema)
 async def attack_by_code(code: int | None = None,
-                db: Session = Depends(get_db)) -> list[Type[Attack]]:
+                db: Session = Depends(get_db)) -> Type[Attack]:
     """
     Attacks with this code
     """
@@ -24,6 +24,6 @@ async def attack_by_code(code: int | None = None,
 @router.get('/', response_model=List[AttackDBSchema])
 async def every(db: Session = Depends(get_db)) -> list[Type[Attack]]:
     """
-    Attacks with this code
+    All Attacks
     """
     return db.query(Attack).all()
