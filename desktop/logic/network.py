@@ -56,158 +56,156 @@ dic41 = {
     'multihop': '32',
     'perl': '33', 'rootkit': '34', 'nmap': '35', 'processtable': '36', 'satan': '37', 'normal': '0'}
 
-k = 0
-help_list = []
-with open('KDDTest+.txt', 'r') as input_file:
-    with open('dataset.txt', 'w') as output_file:
+def network(path, value):
+    k = 0
+    help_list = []
+    with open(path, 'r') as input_file:
+        with open('dataset.txt', 'w') as output_file:
+            for line in input_file.readlines():
+                elements = line.split(',')
+                elements[1] = dic1[elements[1]]
+                elements[2] = dic2[elements[2]]
+                elements[3] = dic3[elements[3]]
+                elements[41] = dic41[elements[41]]
+                new_line = ' '.join(elements)
+                output_file.write(new_line)
+                k = k + 1
+                # print(elements)
+    # print(set(help_list))
+
+    # Часть 2. Нормализация данных, считывание, приведение в формат, подходящий для нейронной сети.
+
+    count = len(elements)
+    # print(count)
+    # print(k)
+
+    outputs = []
+    inputs = []
+
+    outputs1 = []
+    inputs1 = []
+
+    help_list = [0] * count
+    # print(output)
+    dataset = []
+
+    with open('dataset.txt', 'r') as input_file:
         for line in input_file.readlines():
-            elements = line.split(',')
-            # сделай что-нибудь со списком элементов
-            elements[1] = dic1[elements[1]]
-            elements[2] = dic2[elements[2]]
-            elements[3] = dic3[elements[3]]
-            elements[41] = dic41[elements[41]]
-            # help_list.append(elements[41])
-            new_line = ' '.join(elements)
-            output_file.write(new_line)
-            k = k + 1
+            elements = line.split(' ')
+            for i in range(0, len(elements)):
+                elements[i] = float(elements[i])
             # print(elements)
-# print(set(help_list))
+            dataset.append(elements)
 
-# Часть 2. Нормализация данных, считывание, приведение в формат, подходящий для нейронной сети.
+    dataset_1 = dataset.copy()
 
-count = len(elements)
-# print(count)
-# print(k)
+    max_list = [0] * count
+    for i in range(0, k):
+        for j in range(0, count):
+            if max_list[j] < dataset[i][j]:
+                max_list[j] = dataset[i][j]
 
-outputs = []
-inputs = []
-
-outputs1 = []
-inputs1 = []
-
-help_list = [0] * count
-# print(output)
-dataset = []
-
-with open('dataset.txt', 'r') as input_file:
-    for line in input_file.readlines():
-        elements = line.split(' ')
-        for i in range(0, len(elements)):
-            elements[i] = float(elements[i])
-        # print(elements)
-        dataset.append(elements)
-
-dataset_1=dataset.copy()
-
-max_list = [0] * count
-for i in range(0, k):
-    for j in range(0, count):
-        if max_list[j] < dataset[i][j]:
-            max_list[j] = dataset[i][j]
-
-for i in range(0, k):
-    for j in range(0, count):
-        if j!=41:
-            if max_list[j] != 0:
-                dataset[i][j] /= max_list[j]
-                dataset_1[i][j]/=max_list[j]
-        else:
-            if dataset[i][j]!=0:
-                dataset[i][j]=1.0
+    for i in range(0, k):
+        for j in range(0, count):
+            if j != 41:
+                if max_list[j] != 0:
+                    dataset[i][j] /= max_list[j]
+                    dataset_1[i][j] /= max_list[j]
             else:
-                dataset[i][j] = 0.0
+                if dataset[i][j] != 0:
+                    dataset[i][j] = 1.0
+                else:
+                    dataset[i][j] = 0.0
 
-# print(dataset)
+    # print(dataset)
 
-# сборка массивов на вход нейронной сети
+    # сборка массивов на вход нейронной сети
 
-#для обучения на виды
-outputs_help = []
-inputs_help = []
-
-#для обучения на типы
-outputs_help1 = []
-inputs_help1 = []
-for i in range(0, k):
-    for j in range(0, count - 2):
-        inputs_help.append(dataset[i][j])
-        inputs_help1.append(dataset_1[i][j])
-    outputs_help.append(dataset[i][count - 2])
-    outputs_help1.append(dataset_1[i][count - 2])
-    outputs.append(outputs_help)
+    # для обучения на виды
     outputs_help = []
-    inputs.append(inputs_help)
     inputs_help = []
 
-    outputs1.append(outputs_help1)
+    # для обучения на типы
     outputs_help1 = []
-    inputs1.append(inputs_help1)
     inputs_help1 = []
-# pprint.pprint(outputs)
-# print(outputs)
-# print(inputs)
+    for i in range(0, k):
+        for j in range(0, count - 2):
+            inputs_help.append(dataset[i][j])
+            inputs_help1.append(dataset_1[i][j])
+        outputs_help.append(dataset[i][count - 2])
+        outputs_help1.append(dataset_1[i][count - 2])
+        outputs.append(outputs_help)
+        outputs_help = []
+        inputs.append(inputs_help)
+        inputs_help = []
 
-for i in inputs:
-    if len(i) != 41:
-        print(len(i))
+        outputs1.append(outputs_help1)
+        outputs_help1 = []
+        inputs1.append(inputs_help1)
+        inputs_help1 = []
+    # pprint.pprint(outputs)
+    # print(outputs)
+    # print(inputs)
 
-input_data = np.asarray(inputs, dtype=np.float32)
-output_data = np.asarray(outputs, dtype=np.float32)
+    for i in inputs:
+        if len(i) != 41:
+            print(len(i))
 
-input_data1 = np.asarray(inputs1, dtype=np.float32)
-output_data1 = np.asarray(outputs1, dtype=np.float32)
-#print (input_data)
+    input_data = np.asarray(inputs, dtype=np.float32)
+    output_data = np.asarray(outputs, dtype=np.float32)
+
+    input_data1 = np.asarray(inputs1, dtype=np.float32)
+    output_data1 = np.asarray(outputs1, dtype=np.float32)
+    # print (input_data)
+
+    '''
+    #модель для анализа: опасно или нет
+    model1 = models.Sequential()
+    model1.add(layers.Dense(units=41, activation="sigmoid"))
+    model1.add(layers.Dense(units=20, activation="sigmoid"))
+    model1.add(layers.Dense(units=5, activation="sigmoid"))
+    model1.add(layers.Dense(units=1, activation="sigmoid"))
+    model1.compile(loss="binary_crossentropy", optimizer="rmsprop", metrics=["accuracy"])
+    fit_results = model1.fit(input_data, output_data, epochs=1000, validation_split=0.1, batch_size=100)
+    model1.save("weightsnew.h5")
+
+    #подгрузка сети из файла
+    model_loaded = keras.models.load_model("weightsnew.h5")
+    #model_loaded.evaluate(inputs, outputs)
+    inp = []
+    inp.append(input_data[2])
+    inp1=np.asarray(inp, dtype=np.float32)
+    prediction = model_loaded.predict(inp1)
+    #print(prediction)
+
+    prediction1 = model_loaded.predict(inputs)
+    #print(prediction1)
+    #print(outputs)
+    #print(prediction[1])
 
 
-'''
-#модель для анализа: опасно или нет
-model1 = models.Sequential()
-model1.add(layers.Dense(units=41, activation="sigmoid"))
-model1.add(layers.Dense(units=20, activation="sigmoid"))
-model1.add(layers.Dense(units=5, activation="sigmoid"))
-model1.add(layers.Dense(units=1, activation="sigmoid"))
-model1.compile(loss="binary_crossentropy", optimizer="rmsprop", metrics=["accuracy"])
-fit_results = model1.fit(input_data, output_data, epochs=1000, validation_split=0.1, batch_size=100)
-model1.save("weightsnew.h5")
+    plt.title("Losses")
+    plt.plot(fit_results.history["loss"], label='Train losses')
+    plt.plot(fit_results.history["val_loss"], label='Validation losses')
+    plt.legend()
+    plt.show()
 
-#подгрузка сети из файла
-model_loaded = keras.models.load_model("weightsnew.h5")
-#model_loaded.evaluate(inputs, outputs)
-inp = []
-inp.append(input_data[2])
-inp1=np.asarray(inp, dtype=np.float32)
-prediction = model_loaded.predict(inp1)
-#print(prediction)
+    plt.title("Accuracy")
+    plt.plot(fit_results.history["accuracy"], label='Train accuracy')
+    plt.plot(fit_results.history["val_accuracy"], label='Validation accuracy')
+    plt.legend()
+    plt.show()
+    '''
 
-prediction1 = model_loaded.predict(inputs)
-#print(prediction1)
-#print(outputs)
-#print(prediction[1])
+    model = models.Sequential()
+    model.add(layers.Dense(41, activation='sigmoid'))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(40, activation='sigmoid'))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(38, activation='softmax'))
+    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    model.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    model.fit(input_data1, output_data1, epochs=1000, batch_size=128)
+    model.save("weightsclass.h5")
 
-
-plt.title("Losses")
-plt.plot(fit_results.history["loss"], label='Train losses')
-plt.plot(fit_results.history["val_loss"], label='Validation losses')
-plt.legend()
-plt.show()
-
-plt.title("Accuracy")
-plt.plot(fit_results.history["accuracy"], label='Train accuracy')
-plt.plot(fit_results.history["val_accuracy"], label='Validation accuracy')
-plt.legend()
-plt.show()
-'''
-
-model = models.Sequential()
-model.add(layers.Dense(41, activation='sigmoid'))
-model.add(layers.Dropout(0.5))
-model.add(layers.Dense(40, activation='sigmoid'))
-model.add(layers.Dropout(0.5))
-model.add(layers.Dense(38, activation='softmax'))
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-model.fit(input_data1, output_data1, epochs=1000, batch_size=128)
-model.save("weightsclass.h5")
-
-#score = model.evaluate(x_test, y_test, batch_size=128)
+    # score = model.evaluate(x_test, y_test, batch_size=128)

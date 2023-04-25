@@ -12,13 +12,22 @@ class Check(Frame):
     def __init__(self, master=None):
         super(Check, self).__init__(master)
         master = master
+        path = ''
+        value=0
 
         def open_file():
             file_path = askopenfile(mode='r', filetypes=[('Text Files', '*txt')])
             if file_path is not None:
-                pass
+                #print(file_path.name)
+
+                self.path=file_path.name
+                #print(path)
 
         def uploadFiles():
+            self.path
+            print(self.path)
+            print(scale.get())
+
             pb1 = Progressbar(
                 self,
                 orient=HORIZONTAL,
