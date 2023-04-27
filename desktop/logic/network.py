@@ -1,4 +1,4 @@
-# Часть 1. Приведение данных в нужный формат для чтения
+
 import pprint
 import keras as k
 import keras.models
@@ -10,6 +10,8 @@ import random
 import matplotlib.pyplot as plt
 from keras import models, layers
 from keras.optimizers import SGD
+
+from desktop.logic.interpretated import interpretated
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -58,7 +60,9 @@ dic41 = {
 
 def network(path, value):
     k = 0
-    help_list = []
+    final=0
+    print(value)
+    full_elements=[]
     with open(path, 'r') as input_file:
         with open('dataset.txt', 'w') as output_file:
             for line in input_file.readlines():
@@ -67,35 +71,28 @@ def network(path, value):
                 elements[2] = dic2[elements[2]]
                 elements[3] = dic3[elements[3]]
                 elements[41] = dic41[elements[41]]
-                new_line = ' '.join(elements)
-                output_file.write(new_line)
                 k = k + 1
-                # print(elements)
-    # print(set(help_list))
+                full_elements.append(elements)
 
+    #print(full_elements)
     # Часть 2. Нормализация данных, считывание, приведение в формат, подходящий для нейронной сети.
 
     count = len(elements)
-    # print(count)
-    # print(k)
-
     outputs = []
     inputs = []
-
-    outputs1 = []
-    inputs1 = []
-
-    help_list = [0] * count
-    # print(output)
     dataset = []
+    outputs_help = []
+    inputs_help = []
 
-    with open('dataset.txt', 'r') as input_file:
-        for line in input_file.readlines():
-            elements = line.split(' ')
-            for i in range(0, len(elements)):
-                elements[i] = float(elements[i])
-            # print(elements)
-            dataset.append(elements)
+
+
+    for i in range(0, k):
+        for j in range (0, count):
+            full_elements[i][j] = float(full_elements[i][j])
+        #dataset.append(full_elements[i])
+    #print(full_elements)
+    dataset=full_elements.copy()
+    #print(dataset)
 
     dataset_1 = dataset.copy()
 
@@ -105,107 +102,96 @@ def network(path, value):
             if max_list[j] < dataset[i][j]:
                 max_list[j] = dataset[i][j]
 
-    for i in range(0, k):
-        for j in range(0, count):
-            if j != 41:
-                if max_list[j] != 0:
-                    dataset[i][j] /= max_list[j]
-                    dataset_1[i][j] /= max_list[j]
-            else:
-                if dataset[i][j] != 0:
-                    dataset[i][j] = 1.0
+    result =[]
+    if value==0:
+        print("я в первом")
+        for i in range(0, k):
+            for j in range(0, count):
+                if j != 41:
+                    if max_list[j] != 0:
+                        dataset[i][j] /= max_list[j]
                 else:
-                    dataset[i][j] = 0.0
+                    if dataset[i][j] != 0:
+                        dataset[i][j] = 1.0
+                    else:
+                        dataset[i][j] = 0.0
 
-    # print(dataset)
+        for i in range(0, k):
+            for j in range(0, count - 2):
+                inputs_help.append(dataset[i][j])
+            outputs_help.append(dataset[i][count - 2])
+            outputs.append(outputs_help)
+            outputs_help = []
+            inputs.append(inputs_help)
+            inputs_help = []
 
-    # сборка массивов на вход нейронной сети
-
-    # для обучения на виды
-    outputs_help = []
-    inputs_help = []
-
-    # для обучения на типы
-    outputs_help1 = []
-    inputs_help1 = []
-    for i in range(0, k):
-        for j in range(0, count - 2):
-            inputs_help.append(dataset[i][j])
-            inputs_help1.append(dataset_1[i][j])
-        outputs_help.append(dataset[i][count - 2])
-        outputs_help1.append(dataset_1[i][count - 2])
-        outputs.append(outputs_help)
-        outputs_help = []
-        inputs.append(inputs_help)
-        inputs_help = []
-
-        outputs1.append(outputs_help1)
-        outputs_help1 = []
-        inputs1.append(inputs_help1)
-        inputs_help1 = []
-    # pprint.pprint(outputs)
-    # print(outputs)
-    # print(inputs)
-
-    for i in inputs:
-        if len(i) != 41:
-            print(len(i))
-
-    input_data = np.asarray(inputs, dtype=np.float32)
-    output_data = np.asarray(outputs, dtype=np.float32)
-
-    input_data1 = np.asarray(inputs1, dtype=np.float32)
-    output_data1 = np.asarray(outputs1, dtype=np.float32)
-    # print (input_data)
-
-    '''
-    #модель для анализа: опасно или нет
-    model1 = models.Sequential()
-    model1.add(layers.Dense(units=41, activation="sigmoid"))
-    model1.add(layers.Dense(units=20, activation="sigmoid"))
-    model1.add(layers.Dense(units=5, activation="sigmoid"))
-    model1.add(layers.Dense(units=1, activation="sigmoid"))
-    model1.compile(loss="binary_crossentropy", optimizer="rmsprop", metrics=["accuracy"])
-    fit_results = model1.fit(input_data, output_data, epochs=1000, validation_split=0.1, batch_size=100)
-    model1.save("weightsnew.h5")
-
-    #подгрузка сети из файла
-    model_loaded = keras.models.load_model("weightsnew.h5")
-    #model_loaded.evaluate(inputs, outputs)
-    inp = []
-    inp.append(input_data[2])
-    inp1=np.asarray(inp, dtype=np.float32)
-    prediction = model_loaded.predict(inp1)
-    #print(prediction)
-
-    prediction1 = model_loaded.predict(inputs)
-    #print(prediction1)
-    #print(outputs)
-    #print(prediction[1])
+        input_data = np.asarray(inputs, dtype=np.float32)
+        output_data = np.asarray(outputs, dtype=np.float32)
 
 
-    plt.title("Losses")
-    plt.plot(fit_results.history["loss"], label='Train losses')
-    plt.plot(fit_results.history["val_loss"], label='Validation losses')
-    plt.legend()
-    plt.show()
+        # модель для анализа: опасно или нет
+        model1 = models.Sequential()
+        model1.add(layers.Dense(units=41, activation="sigmoid"))
+        model1.add(layers.Dense(units=20, activation="sigmoid"))
+        model1.add(layers.Dense(units=5, activation="sigmoid"))
+        model1.add(layers.Dense(units=1, activation="sigmoid"))
+        # подгрузка сети из файла
+        model_loaded = keras.models.load_model("C:\eqw\desktop\materials\weightsnew.h5")
+        model_loaded.evaluate(inputs, outputs)
+        #print(input_data)
+        inp = []
+        for i in range(0, k):
+            inp.append(input_data[i])
+            inp1 = np.asarray(inp, dtype=np.float32)
+            prediction = model_loaded.predict(inp1)
+            #print(prediction[0][0])
+            rpr=round(prediction[0][0])
+            result.append(rpr)
+            inp=[]
 
-    plt.title("Accuracy")
-    plt.plot(fit_results.history["accuracy"], label='Train accuracy')
-    plt.plot(fit_results.history["val_accuracy"], label='Validation accuracy')
-    plt.legend()
-    plt.show()
-    '''
 
-    model = models.Sequential()
-    model.add(layers.Dense(41, activation='sigmoid'))
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(40, activation='sigmoid'))
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(38, activation='softmax'))
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-    model.compile(loss='sparse_categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-    model.fit(input_data1, output_data1, epochs=1000, batch_size=128)
-    model.save("weightsclass.h5")
 
-    # score = model.evaluate(x_test, y_test, batch_size=128)
+    if value==1:
+        outputs1 = []
+        inputs1 = []
+        print("я во втором")
+
+        for i in range(k):
+            inputs_help1 = dataset_1[i][:-2]
+            outputs_help1 = [0] * 38
+            index = int(float(dataset[i][41]))
+            outputs_help1[index] = 1
+            outputs1.append(outputs_help1)
+            inputs1.append(inputs_help1)
+
+        # print(outputs1)
+
+        input_data1 = np.asarray(inputs1, dtype=np.float32)
+        output_data1 = np.asarray(outputs1, dtype=np.float32)
+
+        model = models.Sequential()
+        model.add(layers.Dense(41, activation='sigmoid'))
+        model.add(layers.Dropout(0.5))
+        model.add(layers.Dense(40, activation='sigmoid'))
+        model.add(layers.Dropout(0.5))
+        model.add(layers.Dense(38, activation='softmax'))
+        inp = []
+        for i in range(0, k):
+            model_loaded = keras.models.load_model("C:\eqw\desktop\materials\weightsclass1.h5")
+            inp.append(input_data1[i])
+            #print(inp)
+            inp1 = np.asarray(inp, dtype=np.float32)
+            prediction = model_loaded.predict(inp1)
+            #print(prediction[0])
+            max_index=np.argmax(prediction[0])
+            print(max_index)
+            result.append(max_index)
+            inp = []
+        #print(result)
+    inter= interpretated(result, value)
+    print(inter)
+
+
+
+
+
