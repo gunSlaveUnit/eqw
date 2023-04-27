@@ -4,6 +4,7 @@ from tkinter.constants import HORIZONTAL
 from tkinter.filedialog import askopenfile
 from tkinter.ttk import Progressbar
 
+from desktop.logic.network import network
 from desktop.materials.strings import LOAD_LABEL, LOAD_BUTTON, CHECK_BUTTON
 
 
@@ -12,8 +13,8 @@ class Check(Frame):
     def __init__(self, master=None):
         super(Check, self).__init__(master)
         master = master
-        path = ''
-        value=0
+        self.path = ''
+        self.value=0
 
         def open_file():
             file_path = askopenfile(mode='r', filetypes=[('Text Files', '*txt')])
@@ -24,9 +25,11 @@ class Check(Frame):
                 #print(path)
 
         def uploadFiles():
-            self.path
-            print(self.path)
-            print(scale.get())
+            #print(self.path)
+            #print(scale.get())
+            self.value=scale.get()
+            res=network(self.path, self.value)
+            print(res)
 
             pb1 = Progressbar(
                 self,
@@ -51,11 +54,19 @@ class Check(Frame):
             self,
             text='Нет'
         )
+
+        def change_value():
+            if self.value==0:
+                self.value=1
+            else:
+                self.value=0
+
+
         no_label.grid(row=0, column=1, sticky="w")
 
         scale = Scale(self, from_=0, to=1, orient="horizontal")
 
-        scale.grid(row=1, column=1, columnspan=2 )
+        scale.grid(row=1, column=1, columnspan=2)
         add_label = Label(
             self,
             text=LOAD_LABEL
