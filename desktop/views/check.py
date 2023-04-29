@@ -4,6 +4,7 @@ from tkinter.constants import HORIZONTAL
 from tkinter.filedialog import askopenfile
 from tkinter.ttk import Progressbar
 
+from desktop.logic.interpretated import interpretated
 from desktop.logic.network import network
 from desktop.materials.strings import LOAD_LABEL, LOAD_BUTTON, CHECK_BUTTON
 
@@ -14,53 +15,42 @@ class Check(Frame):
         super(Check, self).__init__(master)
         master = master
         self.path = ''
-        self.value=0
+        self.value = 0
 
         def open_file():
             file_path = askopenfile(mode='r', filetypes=[('Text Files', '*txt')])
             if file_path is not None:
-                #print(file_path.name)
+                # print(file_path.name)
 
-                self.path=file_path.name
-                #print(path)
+                self.path = file_path.name
+                # print(path)
 
         def uploadFiles():
-            #print(self.path)
-            #print(scale.get())
-            self.value=scale.get()
-            res=network(self.path, self.value)
+            # print(self.path)
+            # print(scale.get())
+            self.value = scale.get()
+            result = network(self.path, self.value)
+            res = interpretated(result, self.value)
+            res = str(res)
             print(res)
-
-            pb1 = Progressbar(
-                self,
-                orient=HORIZONTAL,
-                length=300,
-                mode='determinate'
-            )
-            pb1.grid(row=4, columnspan=3, pady=20)
-            for i in range(5):
-                self.update_idletasks()
-                pb1['value'] += 20
-                time.sleep(1)
-            pb1.destroy()
-            Label(self, text='File Uploaded Successfully!', foreground='green').grid(row=4, columnspan=3, pady=10)
+            print("_____________")
+            Label(self, text=res, foreground='red', font=('Helvetica', 14), wraplength=500).grid(row=4, columnspan=4, pady=10)
 
         info_label = Label(
             self,
             text='Хотите знать тип атаки?'
         )
-        info_label.grid(row=0, column=0,  pady=20, sticky="w", rowspan=2)
+        info_label.grid(row=0, column=0, pady=20, sticky="w", rowspan=2)
         no_label = Label(
             self,
             text='Нет'
         )
 
         def change_value():
-            if self.value==0:
-                self.value=1
+            if self.value == 0:
+                self.value = 1
             else:
-                self.value=0
-
+                self.value = 0
 
         no_label.grid(row=0, column=1, sticky="w")
 
@@ -86,14 +76,9 @@ class Check(Frame):
         )
         add_file_button.grid(row=2, column=3)
 
-
-
         load_button = Button(
             self,
             text=CHECK_BUTTON,
             command=uploadFiles
         )
         load_button.grid(row=3, column=1, columnspan=2, pady=10)
-
-
-

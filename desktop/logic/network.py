@@ -188,9 +188,7 @@ def network(path, value):
             result.append(max_index)
             inp = []
         #print(result)
-    inter= interpretated(result, value)
-    print(inter)
-
+    return (result)
 
 
 
