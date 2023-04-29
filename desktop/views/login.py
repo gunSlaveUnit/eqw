@@ -31,11 +31,14 @@ class Login(Frame):
         self.login_button.pack(pady=20)
 
     def login(self):
-        reply = requests.post('http://localhost:23432/auth/sign-in/', json={
+        reply = requests.post('http://127.0.0.1:23432/auth/sign-in/', json={
             "username": self.username_entry.get(),
             "password": self.password_entry.get()
         })
 
         if reply.status_code == requests.codes.ok:
+            self.master.authorized_session = requests.session()
+            self.master.authorized_session.cookies.set('session', reply.cookies["session"])
+            self.master.load_current_user()
             self.master.switch_frame(self.master.menu_page)
             self.master.full_ui()

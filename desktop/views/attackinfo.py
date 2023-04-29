@@ -16,7 +16,7 @@ class AttackInfo(Frame):
         self.info_label = Label(self, text=" ", font=('Helvetica', 8), wraplength=600)
         self.info_label.grid(row=1, column=2, sticky='w')
 
-        reply = requests.get('http://localhost:23432/attack/')
+        reply = requests.get('http://127.0.0.1:23432/attack/')
         attacks = reply.json()
         print(attacks)
         attack_titles = [attack['type'] for attack in attacks]

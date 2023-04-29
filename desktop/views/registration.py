@@ -37,12 +37,15 @@ class Registration(Frame):
         self.sign_up_button.pack(pady=20)
 
     def registration(self):
-        reply = requests.post('http://localhost:23432/auth/sign-up/', json={
+        reply = requests.post('http://127.0.0.1:23432/auth/sign-up/', json={
             "email": self.email_entry.get(),
             "username": self.username_entry.get(),
             "password": self.password_entry.get()
         })
 
         if reply.status_code == requests.codes.ok:
+            self.master.authorized_session = requests.session()
+            self.master.authorized_session.cookies.set('session', reply.cookies["session"])
+            self.master.load_current_user()
             self.master.switch_frame(self.master.login_page)
 

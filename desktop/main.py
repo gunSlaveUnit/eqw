@@ -1,6 +1,7 @@
 
 from tkinter.ttk import Notebook, Frame
 
+import requests
 import ttkbootstrap
 
 from ttkbootstrap import Window
@@ -19,13 +20,19 @@ class MainWindow(Window):
     def __init__(self):
         super(MainWindow, self).__init__()
         ttkbootstrap.Style().theme_use('vapor')
+
+        self.authorized_session = None
+        self.current_user = None
+
         self.login_page = Login(self)
         self.registration_page = Registration(self)
         self.menu_page = Menu(self)
         self.current_frame = self.login_page
         self.current_frame.pack()
 
-
+    def load_current_user(self):
+        reply = self.authorized_session.get('http://127.0.0.1:23432/auth/me/')
+        self.current_user = reply.json()
 
     def switch_frame(self, frame):
         self.current_frame.destroy()

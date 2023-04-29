@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Cookie
 from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import JSONResponse
@@ -51,10 +51,6 @@ async def sign_up(registration_data: SignUpSchema,
 @router.post("/sign-in/")
 async def sign_in(login_data: SignInSchema,
                   db: Session = Depends(get_db)):
-    """
-    Sets the session id in the request cookie
-    if the user is successfully authenticated.
-    """
     user: User | None = await authenticate_user(login_data.username, login_data.password, db)
     if user is None:
         raise HTTPException(
@@ -66,7 +62,7 @@ async def sign_in(login_data: SignInSchema,
     sessions[session_id] = user.id
 
     response = JSONResponse({"detail": "Logged in successfully"})
-    response.set_cookie("session_id", session_id, max_age=3600)
+    response.set_cookie("session", session_id, max_age=3600)
     return response
 
 
@@ -75,6 +71,25 @@ def sign_out():
     return {"message": "Sign out"}
 
 
-@router.post('/me/')
-def me():
-    return {"message": "Me"}
+async def get_current_user(session: str = Cookie(None),
+                           db: Session = Depends(get_db)):
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session ID not provided"
+        )
+
+    user_id = sessions[session]
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The session has expired. Please re-login"
+        )
+
+    return db.query(User).filter(User.id == user_id).one()
+
+
+@router.get('/me/')
+async def me(current_user: User = Depends(get_current_user)):
+    return current_user
+
