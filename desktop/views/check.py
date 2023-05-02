@@ -32,9 +32,31 @@ class Check(Frame):
             result = network(self.path, self.value)
             res = interpretated(result, self.value)
             res = str(res)
+            att = list(set(result))
+            att.sort()
             print(res)
             print("_____________")
-            Label(self, text=res, foreground='red', font=('Helvetica', 14), wraplength=500).grid(row=4, columnspan=4, pady=10)
+            is_attack = False
+            for i in range(0, len(result)):
+                if result[i] != 0:
+                    is_attack = True
+            reply = self.master.master.authorized_session.post('http://127.0.0.1:23432/check/checks/', json={
+                "result": res,
+                "is_attack": is_attack,
+                "check_type": self.value
+            })
+            if reply.ok:
+                data = reply.json
+                check_id = data['id']
+                if self.value == 1:
+                    for i in range(0, len(att)):
+                        request = self.master.master.authorized_session.post('http://127.0.0.1:23432/check/matchs/', json={
+                            "attack_id": att[i],
+                            "check_id": check_id
+                        })
+
+            Label(self, text=res, foreground='red', font=('Helvetica', 14), wraplength=500).grid(row=4, columnspan=4,
+                                                                                                 pady=10)
 
         info_label = Label(
             self,

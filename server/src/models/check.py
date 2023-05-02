@@ -11,5 +11,5 @@ class Check(Entity):
 
     result = Column(String, index=True, nullable=False)
     is_attack = Column(Boolean, nullable=False, default=False)
-    type_id = Column(Integer, ForeignKey("attacks.id"), index=True)
+    check_type = Column(Integer, nullable=False, index=True)
     person_id = Column(Integer, ForeignKey("users.id"), index=True)

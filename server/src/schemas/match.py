@@ -1,7 +1,7 @@
 from server.src.schemas.entity import EntityDBSchema
 
 
-class CheckDBSchema(EntityDBSchema):
+class MatchDBSchema(EntityDBSchema):
 
     attack_id: int
     check_id: int

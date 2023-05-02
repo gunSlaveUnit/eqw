@@ -26,6 +26,7 @@ def interpretated(result, value):
         else:
             if att[0] == 0:
                 answer = "Ваш трафик безопасен. Поздравляем!"
+
             else:
                 answer = f"Вы столкнулись со следующей опасностью: {attack_titles[att[0]]}"
     else:
@@ -37,3 +38,5 @@ def interpretated(result, value):
             else:
                 answer = "Ваш трафик содержит вредоносные элементы"
     return (answer)
+
+
