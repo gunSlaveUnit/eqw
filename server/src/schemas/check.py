@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 from server.src.schemas.entity import EntityDBSchema
 
 
@@ -11,7 +13,7 @@ class CheckDBSchema(EntityDBSchema):
         orm_mode = True
 
 
-class CheckCreateSchema(EntityDBSchema):
+class CheckCreateSchema(BaseModel):
     result: str
     is_attack: bool
     check_type: int

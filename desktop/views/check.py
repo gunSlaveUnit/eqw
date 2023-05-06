@@ -1,6 +1,6 @@
 import time
 from tkinter import Frame, Label, Menu, Button, Scale, IntVar
-from tkinter.constants import HORIZONTAL
+from tkinter.constants import HORIZONTAL, LEFT
 from tkinter.filedialog import askopenfile
 from tkinter.ttk import Progressbar
 
@@ -28,38 +28,47 @@ class Check(Frame):
         def uploadFiles():
             # print(self.path)
             # print(scale.get())
+            self.res_label.destroy()
             self.value = scale.get()
             result = network(self.path, self.value)
             res = interpretated(result, self.value)
             res = str(res)
             att = list(set(result))
             att.sort()
-            print(res)
+
+
+            # print(res)
             print("_____________")
             is_attack = False
             for i in range(0, len(result)):
                 if result[i] != 0:
                     is_attack = True
+            print(type(res))
+            print(type(is_attack))
+            print(type(self.value))
             reply = self.master.master.authorized_session.post('http://127.0.0.1:23432/check/checks/', json={
                 "result": res,
                 "is_attack": is_attack,
                 "check_type": self.value
             })
             if reply.ok:
-                data = reply.json
+                data = reply.json()
+                print(data)
                 check_id = data['id']
                 if self.value == 1:
                     for i in range(0, len(att)):
-                        request = self.master.master.authorized_session.post('http://127.0.0.1:23432/check/matchs/', json={
-                            "attack_id": att[i],
-                            "check_id": check_id
-                        })
+                        request = self.master.master.authorized_session.post('http://127.0.0.1:23432/check/matchs/',
+                                                                             json={
+                                                                                 "attack_id": att[i].item(),
+                                                                                 "check_id": check_id
+                                                                             })
 
-            Label(self, text=res, foreground='red', font=('Helvetica', 14), wraplength=500).grid(row=4, columnspan=4,
-                                                                                                 pady=10)
+            self.res_label = Label(self, text=res, foreground='red', font=('Helvetica', 14), wraplength=750, justify=LEFT)
+            self.res_label.grid(row=4, columnspan=6, pady=10, padx=5)
 
         info_label = Label(
             self,
+            font=('Helvetica', 14),
             text='Хотите знать тип атаки?'
         )
         info_label.grid(row=0, column=0, pady=20, sticky="w", rowspan=2)
@@ -81,6 +90,7 @@ class Check(Frame):
         scale.grid(row=1, column=1, columnspan=2)
         add_label = Label(
             self,
+            font=('Helvetica', 14),
             text=LOAD_LABEL
         )
         yes_label = Label(
@@ -104,3 +114,7 @@ class Check(Frame):
             command=uploadFiles
         )
         load_button.grid(row=3, column=1, columnspan=2, pady=10)
+
+        self.res_label=Label(self, text="", foreground='red', font=('Helvetica', 14), wraplength=750, justify=LEFT)
+        self.res_label.grid(row=4, columnspan=6, pady=10, padx=5)
+
