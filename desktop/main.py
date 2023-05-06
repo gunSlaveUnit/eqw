@@ -61,7 +61,7 @@ class MainWindow(Window):
         notebook.add(frame1, text='Проверка')
         notebook.add(frame2, text='Информация о проверках')
         notebook.add(frame3, text='Опасности')
-        notebook.add(frame4, text='Настройки')
+        notebook.add(frame4, text='Дополнительные возможности')
         notebook.add(frame5, text='Справка')
 
 

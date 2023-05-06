@@ -76,8 +76,12 @@ async def attack_by_params(start_time: int = Query(None),
         items_query = items_query.filter(start_time <= Check.created_at)
     if end_time is not None:
         items_query = items_query.filter(end_time >= Check.created_at)
-    if search_type is not None:
-        items_query = items_query.filter(search_type == Check.check_type)
+    if search_type is not None and search_type!=2:
+        if search_type==0:
+            search_type=False
+        if search_type==1:
+            search_type=True
+        items_query = items_query.filter(search_type == Check.is_attack)
 
     items = items_query.all()
     print(items)
