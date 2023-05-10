@@ -2,7 +2,6 @@ from tkinter import Frame, Label, Entry
 from tkinter.ttk import Button
 import requests
 
-
 from desktop.materials.strings import REGISTRATION_LABEL, EMAIL_LABEL, USER_NAME_LABEL, PASSWORD_LABEL, \
     REGISTRATION_BUTTON, GO_TO_REG_LABEL
 
@@ -10,7 +9,7 @@ from desktop.materials.strings import REGISTRATION_LABEL, EMAIL_LABEL, USER_NAME
 class Registration(Frame):
     def __init__(self, master=None):
         super(Registration, self).__init__(master)
-        master=master
+        master = master
 
         self.header_label = Label(self, text=REGISTRATION_LABEL, font=('Helvetica', 12, "bold"), pady=15)
         self.header_label.pack()
@@ -56,4 +55,5 @@ class Registration(Frame):
             self.master.authorized_session = requests.session()
             self.master.authorized_session.cookies.set('session', reply.cookies["session"])
             self.master.load_current_user()
-            self.master.switch_frame(self.master.login_page)
+            self.master.switch_frame(self.master.menu_page)
+            self.master.full_ui()

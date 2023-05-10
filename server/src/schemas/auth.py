@@ -3,7 +3,7 @@ from pydantic.networks import EmailStr
 
 
 class SignInSchema(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 

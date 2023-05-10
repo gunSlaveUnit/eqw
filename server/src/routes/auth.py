@@ -41,7 +41,7 @@ async def sign_up(registration_data: SignUpSchema,
 
     return await sign_in(
         SignInSchema(
-            username=user.username,
+            email=user.email,
             password=registration_data.password
         ),
         db
@@ -51,7 +51,7 @@ async def sign_up(registration_data: SignUpSchema,
 @router.post("/sign-in/")
 async def sign_in(login_data: SignInSchema,
                   db: Session = Depends(get_db)):
-    user: User | None = await authenticate_user(login_data.username, login_data.password, db)
+    user: User | None = await authenticate_user(login_data.email, login_data.password, db)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -3,7 +3,8 @@ from tkinter.ttk import Button
 
 import requests
 
-from desktop.materials.strings import LOGIN_LABEL, LOGIN_BUTTON, PASSWORD_LABEL, USER_NAME_LABEL, GO_TO_AUTH_LABEL
+from desktop.materials.strings import LOGIN_LABEL, LOGIN_BUTTON, PASSWORD_LABEL, USER_NAME_LABEL, GO_TO_AUTH_LABEL, \
+    EMAIL_LABEL
 
 
 class Login(Frame):
@@ -15,7 +16,7 @@ class Login(Frame):
         self.header_label = Label(self, text=LOGIN_LABEL, font=('Helvetica', 18, "bold"))
         self.header_label.pack(pady=20)
 
-        self.username_label = Label(self, text=USER_NAME_LABEL, font=('Helvetica', 12), pady=30)
+        self.username_label = Label(self, text=EMAIL_LABEL, font=('Helvetica', 12), pady=30)
         self.username_label.pack()
 
         self.username_entry = Entry(self)
@@ -41,7 +42,7 @@ class Login(Frame):
 
     def login(self):
         reply = requests.post('http://127.0.0.1:23432/auth/sign-in/', json={
-            "username": self.username_entry.get(),
+            "email": self.username_entry.get(),
             "password": self.password_entry.get()
         })
 
