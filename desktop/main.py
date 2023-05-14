@@ -1,4 +1,4 @@
-
+from tkinter import Button
 from tkinter.ttk import Notebook, Frame
 
 import requests
@@ -6,11 +6,12 @@ import ttkbootstrap
 
 from ttkbootstrap import Window
 
+from desktop.logic.auth import exit_func
 from desktop.materials.strings import WINDOW_NAME
 from desktop.views.attackinfo import AttackInfo
 from desktop.views.check import Check
 from desktop.views.info import Info
-from desktop.views.menu import Menu
+from desktop.views.menu import  AppMenu
 from desktop.views.registration import Registration
 from desktop.views.settings import Settings
 from views.login import Login
@@ -26,7 +27,7 @@ class MainWindow(Window):
 
         self.login_page = Login(self)
         self.registration_page = Registration(self)
-        self.menu_page = Menu(self)
+        self.menu_page = AppMenu(self)
         self.current_frame = self.login_page
         self.current_frame.pack()
 
@@ -35,13 +36,13 @@ class MainWindow(Window):
         self.current_user = reply.json()
 
     def switch_frame(self, frame):
-        self.current_frame.destroy()
+        self.current_frame.pack_forget()
         self.current_frame = frame
         self.current_frame.pack()
 
     def full_ui(self, tk=None):
-        
- 
+
+
         notebook = Notebook(self)
         notebook.pack(pady=10, expand=True)
 
@@ -50,6 +51,7 @@ class MainWindow(Window):
         frame3=AttackInfo(notebook)
         frame4 = Settings(notebook)
         frame5 = Frame(notebook, width=780, height=580)
+
 
 
         frame1.pack(fill='both', expand=True)
@@ -63,6 +65,9 @@ class MainWindow(Window):
         notebook.add(frame3, text='Опасности')
         notebook.add(frame4, text='Дополнительные возможности')
         notebook.add(frame5, text='Справка')
+
+
+
 
 
 

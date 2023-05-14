@@ -11,10 +11,10 @@ class Registration(Frame):
         super(Registration, self).__init__(master)
         master = master
 
-        self.header_label = Label(self, text=REGISTRATION_LABEL, font=('Helvetica', 12, "bold"), pady=15)
+        self.header_label = Label(self, text=REGISTRATION_LABEL, font=('Helvetica', 18, "bold"), pady=15)
         self.header_label.pack()
 
-        self.email_label = Label(self, text=EMAIL_LABEL, font=('Helvetica', 12), pady=30)
+        self.email_label = Label(self, text=EMAIL_LABEL, font=('Helvetica', 12), pady=15)
         self.email_label.pack()
 
         self.email_entry = Entry(self)
@@ -26,7 +26,7 @@ class Registration(Frame):
         self.username_entry = Entry(self)
         self.username_entry.pack()
 
-        self.password_label = Label(self, text=PASSWORD_LABEL, font=('Helvetica', 12))
+        self.password_label = Label(self, text=PASSWORD_LABEL, font=('Helvetica', 12), pady=15)
         self.password_label.pack()
 
         self.password_entry = Entry(self)
@@ -35,14 +35,12 @@ class Registration(Frame):
         self.sign_up_button = Button(self, text=REGISTRATION_BUTTON, command=self.registration)
         self.sign_up_button.pack(pady=20)
 
-        """
-        def log(self):
-            self.master.switch_frame(self.master.login_page)
+        def auth(self):
+            master.switch_frame(master.login_page)
 
-        self.reg_label = Label(self, text=GO_TO_REG_LABEL, font=('Helvetica', 12), pady=15, )
-        self.reg_label.bind("<Button-1>", log)
-        self.reg_label.pack()
-        """
+        self.auth_label = Label(self, text="Есть аккаунт? Войти", font=('Helvetica', 12), pady=15, )
+        self.auth_label.bind("<Button-1>", auth)
+        self.auth_label.pack()
 
     def registration(self):
         reply = requests.post('http://127.0.0.1:23432/auth/sign-up/', json={

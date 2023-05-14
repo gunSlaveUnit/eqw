@@ -1,16 +1,7 @@
-import pprint
-import keras as k
 import keras.models
 import numpy as np
-import tensorflow as tf
-import pickle
 import os
-import random
-import matplotlib.pyplot as plt
 from keras import models, layers
-from keras.optimizers import SGD
-
-from desktop.logic.interpretated import interpretated
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = ''

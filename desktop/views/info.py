@@ -6,7 +6,7 @@ from tkinter import *
 
 import requests
 
-from desktop.logic.data_val import check_date
+from desktop.logic.data_val import DateChecker
 
 
 class Info(Frame):
@@ -27,8 +27,9 @@ class Info(Frame):
             help.label["text"] = f"вы выбрали: {selection}"
             tp = help.combobox.current()
             print(help.combobox.current())
-            st = check_date(help.date_start.get())
-            end = check_date(help.date_end.get())
+            check_date=DateChecker()
+            st = check_date.check_date(help.date_start.get())
+            end = check_date.check_date(help.date_end.get())
             print(st)
             if st == None:
                 st = 0

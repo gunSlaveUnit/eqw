@@ -4,7 +4,7 @@ from tkinter.constants import HORIZONTAL, LEFT
 from tkinter.filedialog import askopenfile
 from tkinter.ttk import Progressbar
 
-from desktop.logic.interpretated import interpretated
+from desktop.logic.interpretated import TrafficAnalyzer
 from desktop.logic.network import network
 from desktop.materials.strings import LOAD_LABEL, LOAD_BUTTON, CHECK_BUTTON
 
@@ -20,25 +20,18 @@ class Check(Frame):
         def open_file():
             file_path = askopenfile(mode='r', filetypes=[('Text Files', '*txt')])
             if file_path is not None:
-                # print(file_path.name)
-
                 self.path = file_path.name
-                # print(path)
 
         def uploadFiles():
-            # print(self.path)
-            # print(scale.get())
             self.res_label.destroy()
             self.value = scale.get()
             result = network(self.path, self.value)
-            res = interpretated(result, self.value)
+            interpretated=TrafficAnalyzer()
+
+            res = interpretated.interpretated(result, self.value)
             res = str(res)
             att = list(set(result))
             att.sort()
-
-
-            # print(res)
-            print("_____________")
             is_attack = False
             for i in range(0, len(result)):
                 if result[i] != 0:

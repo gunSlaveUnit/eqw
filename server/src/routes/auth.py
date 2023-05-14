@@ -67,8 +67,23 @@ async def sign_in(login_data: SignInSchema,
 
 
 @router.post('/sign-out/')
-def sign_out():
-    return {"message": "Sign out"}
+async def sign_out(session: str = Cookie()):
+    """Deletes a user session."""
+
+    if session in sessions:
+        del sessions[session]
+
+        response = JSONResponse({"detail": f"Session {session} was removed"})
+        response.delete_cookie('session')
+
+        return response
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Session {session} not found"
+        )
+
+
 
 
 async def get_current_user(session: str = Cookie(None),
