@@ -10,7 +10,7 @@ from desktop.views.menu import AppMenu
 from desktop.views.registration import Registration
 from desktop.views.settings import Settings
 from views.login import Login
-from settings import ICONS_PATH
+from settings import ICONS_PATH, ME_URL
 
 
 class MainWindow(ttkb.Window):
@@ -28,7 +28,7 @@ class MainWindow(ttkb.Window):
         self.current_frame.pack()
 
     def load_current_user(self):
-        reply = self.authorized_session.get('http://127.0.0.1:23432/auth/me/')
+        reply = self.authorized_session.get(ME_URL)
         self.current_user = reply.json()
 
     def switch_frame(self, frame):
@@ -62,6 +62,6 @@ class MainWindow(ttkb.Window):
 main_window = MainWindow()
 main_window.title(WINDOW_NAME)
 main_window.geometry('800x600')
-main_window.iconbitmap(ICONS_PATH / 'shield.png')
+main_window.iconbitmap(ICONS_PATH / 'shield.ico')
 main_window.resizable(width=0, height=0)
 main_window.mainloop()

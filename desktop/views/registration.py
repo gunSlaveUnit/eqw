@@ -4,6 +4,7 @@ import requests
 
 from desktop.materials.strings import REGISTRATION_LABEL, EMAIL_LABEL, USER_NAME_LABEL, PASSWORD_LABEL, \
     REGISTRATION_BUTTON, GO_TO_REG_LABEL
+from desktop.settings import REGISTER_URL
 
 
 class Registration(Frame):
@@ -43,7 +44,7 @@ class Registration(Frame):
         self.auth_label.pack()
 
     def registration(self):
-        reply = requests.post('http://127.0.0.1:23432/auth/sign-up/', json={
+        reply = requests.post(REGISTER_URL, json={
             "email": self.email_entry.get(),
             "username": self.username_entry.get(),
             "password": self.password_entry.get()
