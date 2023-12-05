@@ -7,6 +7,7 @@ from tkinter import *
 import requests
 
 from desktop.logic.data_val import DateChecker
+from desktop.settings import CHECKS_URL, ONE_CHECK_URL
 
 
 class Info(Frame):
@@ -40,7 +41,7 @@ class Info(Frame):
 
             print(end)
             reply = self.master.master.authorized_session.get(
-                f'http://127.0.0.1:23432/check/check/?start_time={st}&end_time={end}&search_type={tp}')
+                f'{ONE_CHECK_URL}?start_time={st}&end_time={end}&search_type={tp}')
             if reply.ok:
                 print("Повезло")
                 checks = reply.json()
@@ -99,7 +100,7 @@ class Info(Frame):
 
         checks = []
 
-        reply = self.master.master.authorized_session.get('http://127.0.0.1:23432/check/checks/')
+        reply = self.master.master.authorized_session.get(CHECKS_URL)
         if reply.ok:
             checks = reply.json()
             print(checks)

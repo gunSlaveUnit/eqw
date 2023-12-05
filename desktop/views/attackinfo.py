@@ -4,6 +4,8 @@ import tkinter as tk
 
 import requests
 
+from desktop.settings import ATTACK_URL
+
 
 class AttackInfo(Frame):
     def __init__(self, master=None):
@@ -16,7 +18,7 @@ class AttackInfo(Frame):
         self.info_label = Label(self, text=" ", font=('Helvetica', 8), wraplength=600)
         self.info_label.grid(row=1, column=2, sticky='w')
 
-        reply = requests.get('http://127.0.0.1:23432/attack/')
+        reply = requests.get(ATTACK_URL)
         attacks = reply.json()
         print(attacks)
         attack_titles = [attack['type'] for attack in attacks]

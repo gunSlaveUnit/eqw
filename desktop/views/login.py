@@ -5,6 +5,7 @@ import requests
 
 from desktop.materials.strings import LOGIN_LABEL, LOGIN_BUTTON, PASSWORD_LABEL, USER_NAME_LABEL, GO_TO_AUTH_LABEL, \
     EMAIL_LABEL
+from desktop.settings import LOGIN_URL
 
 
 class Login(Frame):
@@ -41,7 +42,7 @@ class Login(Frame):
 
 
     def login(self):
-        reply = requests.post('http://127.0.0.1:23432/auth/sign-in/', json={
+        reply = requests.post(LOGIN_URL, json={
             "email": self.username_entry.get(),
             "password": self.password_entry.get()
         })

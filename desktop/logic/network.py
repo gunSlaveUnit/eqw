@@ -1,7 +1,7 @@
-import keras.models
-import numpy as np
 import os
-from keras import models, layers
+
+import keras
+import numpy as np
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -48,11 +48,12 @@ dic41 = {
     'multihop': '32',
     'perl': '33', 'rootkit': '34', 'nmap': '35', 'processtable': '36', 'satan': '37', 'normal': '0'}
 
+
 def network(path, value):
     k = 0
-    final=0
+    final = 0
     print(value)
-    full_elements=[]
+    full_elements = []
     with open(path, 'r') as input_file:
         with open('dataset.txt', 'w') as output_file:
             for line in input_file.readlines():
@@ -64,7 +65,7 @@ def network(path, value):
                 k = k + 1
                 full_elements.append(elements)
 
-    #print(full_elements)
+    # print(full_elements)
     # Часть 2. Нормализация данных, считывание, приведение в формат, подходящий для нейронной сети.
 
     count = len(elements)
@@ -74,15 +75,13 @@ def network(path, value):
     outputs_help = []
     inputs_help = []
 
-
-
     for i in range(0, k):
-        for j in range (0, count):
+        for j in range(0, count):
             full_elements[i][j] = float(full_elements[i][j])
-        #dataset.append(full_elements[i])
-    #print(full_elements)
-    dataset=full_elements.copy()
-    #print(dataset)
+        # dataset.append(full_elements[i])
+    # print(full_elements)
+    dataset = full_elements.copy()
+    # print(dataset)
 
     dataset_1 = dataset.copy()
 
@@ -92,8 +91,8 @@ def network(path, value):
             if max_list[j] < dataset[i][j]:
                 max_list[j] = dataset[i][j]
 
-    result =[]
-    if value==0:
+    result = []
+    if value == 0:
         print("я в первом")
         for i in range(0, k):
             for j in range(0, count):
@@ -118,30 +117,27 @@ def network(path, value):
         input_data = np.asarray(inputs, dtype=np.float32)
         output_data = np.asarray(outputs, dtype=np.float32)
 
-
         # модель для анализа: опасно или нет
-        model1 = models.Sequential()
-        model1.add(layers.Dense(units=41, activation="sigmoid"))
-        model1.add(layers.Dense(units=20, activation="sigmoid"))
-        model1.add(layers.Dense(units=5, activation="sigmoid"))
-        model1.add(layers.Dense(units=1, activation="sigmoid"))
+        model1 = keras.models.Sequential()
+        model1.add(keras.layers.Dense(units=41, activation="sigmoid"))
+        model1.add(keras.layers.Dense(units=20, activation="sigmoid"))
+        model1.add(keras.layers.Dense(units=5, activation="sigmoid"))
+        model1.add(keras.layers.Dense(units=1, activation="sigmoid"))
         # подгрузка сети из файла
         model_loaded = keras.models.load_model("C:\eqw\desktop\materials\weightsnew.h5")
         model_loaded.evaluate(inputs, outputs)
-        #print(input_data)
+        # print(input_data)
         inp = []
         for i in range(0, k):
             inp.append(input_data[i])
             inp1 = np.asarray(inp, dtype=np.float32)
             prediction = model_loaded.predict(inp1)
-            #print(prediction[0][0])
-            rpr=round(prediction[0][0])
+            # print(prediction[0][0])
+            rpr = round(prediction[0][0])
             result.append(rpr)
-            inp=[]
+            inp = []
 
-
-
-    if value==1:
+    if value == 1:
         outputs1 = []
         inputs1 = []
         print("я во втором")
@@ -159,27 +155,23 @@ def network(path, value):
         input_data1 = np.asarray(inputs1, dtype=np.float32)
         output_data1 = np.asarray(outputs1, dtype=np.float32)
 
-        model = models.Sequential()
-        model.add(layers.Dense(41, activation='sigmoid'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(40, activation='sigmoid'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(38, activation='softmax'))
+        model = keras.models.Sequential()
+        model.add(keras.layers.Dense(41, activation='sigmoid'))
+        model.add(keras.layers.Dropout(0.5))
+        model.add(keras.layers.Dense(40, activation='sigmoid'))
+        model.add(keras.layers.Dropout(0.5))
+        model.add(keras.layers.Dense(38, activation='softmax'))
         inp = []
         for i in range(0, k):
             model_loaded = keras.models.load_model("C:\eqw\desktop\materials\weightsclass1.h5")
             inp.append(input_data1[i])
-            #print(inp)
+            # print(inp)
             inp1 = np.asarray(inp, dtype=np.float32)
             prediction = model_loaded.predict(inp1)
-            #print(prediction[0])
-            max_index=np.argmax(prediction[0])
+            # print(prediction[0])
+            max_index = np.argmax(prediction[0])
             print(max_index)
             result.append(max_index)
             inp = []
-        #print(result)
+        # print(result)
     return (result)
-
-
-
-
